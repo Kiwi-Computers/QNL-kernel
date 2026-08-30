@@ -1,0 +1,421 @@
+// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
+/*
+ * Copyright (c) 2021 Rockchip Electronics Co., Ltd.
+ *
+ */
+
+/dts-v1/;
+
+#include "rk3588-m1-v21.dtsi"
+#include "rk3588-linux.dtsi"
+
+/ {
+	model = "Rockchip RK3588 M1 LP4 V21 Linux Board";
+	compatible = "rockchip,rk3588-m1-v21-linux", "rockchip,rk3588";
+	
+    test-power {
+        status = "okay";
+    };
+
+	vcc3v3_lcd_n: vcc3v3-lcd0-n {
+		compatible = "regulator-fixed";
+		gpio = <&gpio1 RK_PA4 GPIO_ACTIVE_HIGH>;
+		regulator-name = "vcc3v3_lcd0_n";
+		enable-active-high;
+		regulator-boot-on;
+	};		
+
+	vcc_3v3_sd_s0: vcc-3v3-sd-s0-regulator {
+		compatible = "regulator-fixed";
+		gpio = <&gpio4 RK_PA2 GPIO_ACTIVE_HIGH>;
+		pinctrl-names = "default";
+		pinctrl-0 = <&sd_s0_pwr>;
+		regulator-name = "vcc_3v3_sd_s0";
+		enable-active-low;
+		regulator-boot-on;
+		regulator-always-on;
+	};
+
+	backlight: backlight {
+		status = "okay";
+		pwms = <&pwm1 0 25000 0>;
+		compatible = "pwm-backlight";
+		brightness-levels = <
+			  0  20  20  21  21  22  22  23
+			 23  24  24  25  25  26  26  27
+			 27  28  28  29  29  30  30  31
+			 31  32  32  33  33  34  34  35
+			 35  36  36  37  37  38  38  39
+			 40  41  42  43  44  45  46  47
+			 48  49  50  51  52  53  54  55
+			 56  57  58  59  60  61  62  63
+			 64  65  66  67  68  69  70  71
+			 72  73  74  75  76  77  78  79
+			 80  81  82  83  84  85  86  87
+			 88  89  90  91  92  93  94  95
+			 96  97  98  99 100 101 102 103
+			104 105 106 107 108 109 110 111
+			112 113 114 115 116 117 118 119
+			120 121 122 123 124 125 126 127
+			128 129 130 131 132 133 134 135
+			136 137 138 139 140 141 142 143
+			144 145 146 147 148 149 150 151
+			152 153 154 155 156 157 158 159
+			160 161 162 163 164 165 166 167
+			168 169 170 171 172 173 174 175
+			176 177 178 179 180 181 182 183
+			184 185 186 187 188 189 190 191
+			192 193 194 195 196 197 198 199
+			200 201 202 203 204 205 206 207
+			208 209 210 211 212 213 214 215
+			216 217 218 219 220 221 222 223
+			224 225 226 227 228 229 230 231
+			232 233 234 235 236 237 238 239
+			240 241 242 243 244 245 246 247
+			248 249 250 251 252 253 254 255
+		>;
+		default-brightness-level = <200>;
+	};
+	
+	 tyzc_sn_en {
+	   status = "okay";
+	   compatible = "usb-pwr-gpio";
+	 };
+
+	 tyzc_spirs {
+	   status = "okay";
+	   compatible = "tyzc-spirs";
+	 };
+	 
+};
+
+&pwm1 {
+	pinctrl-names = "active";
+	pinctrl-0 = <&pwm1m2_pins>;
+	status = "okay";
+};
+
+&hdcp1 {
+	status = "okay";
+};
+/*
+ * mipi_dcphy0 needs to be enabled
+ * when dsi0 is enabled
+ */
+&mipi_dcphy0 {
+    status = "okay";
+};
+
+&dsi0 {
+	status = "okay";
+	//rockchip,lane-rate = <1000>;
+	
+	dsi0_panel: panel@0 {
+		status = "okay";
+		compatible = "simple-panel-dsi";
+		reg = <0>;
+		power-supply = <&vcc3v3_lcd_n>;
+		reset-gpios = <&gpio2 RK_PB4 GPIO_ACTIVE_LOW>;
+		green-gpios = <&gpio1 RK_PD7 GPIO_ACTIVE_HIGH>;
+		red-gpios = <&gpio1 RK_PA2 GPIO_ACTIVE_LOW>;		
+		pinctrl-names = "default";
+		pinctrl-0 = <&lcd_rst_gpio>;
+		
+		backlight = <&backlight>;
+		reset-delay-ms = <0>;
+		enable-delay-ms = <30>;
+		prepare-delay-ms = <30>;
+		init-delay-ms = <60>;
+		unprepare-delay-ms = <30>;
+		disable-delay-ms = <30>;
+		dsi,flags = <(MIPI_DSI_MODE_VIDEO | MIPI_DSI_MODE_VIDEO_BURST |
+			MIPI_DSI_MODE_LPM | MIPI_DSI_MODE_NO_EOT_PACKET)>;
+		dsi,format = <MIPI_DSI_FMT_RGB888>;
+		dsi,lanes  = <1>;
+
+		panel-new1-init-sequence = [
+			39 0A 06 F0 55 aa 52 08 00
+			39 0A 06 F0 55 aa 52 08 00
+			39 0A 03 F6 5A 87
+			39 0A 03 F6 5A 87
+			39 0A 03 F6 5A 87
+			15 0A 02 c6 78
+			15 0A 02 cd 25
+			15 0A 02 c9 10
+			15 0A 02 f8 8a
+			15 0A 02 ac 65
+			15 0A 02 a7 47
+			15 0A 02 a0 dd
+			39 0A 04 87 04 03 66
+			39 0A 05 86 99 a3 a3 31
+			39 0A 05 fa 08 08 00 04
+			15 0A 02 A3 6E
+			39 0A 04 FD 28 3C 00
+			15 0A 02 94 86
+			15 0A 02 9a 87
+			15 0A 02 9b 5f
+			39 0A 03 82 3d 3d
+			15 0A 02 b1 10
+			39 0A 21 6d 1e 1e 1e 1E 01 09 0b 0d 0f 07 1E 1e 1E 1E 1e 1e 1e 1e 1E 1E 1e 1E 08 10 0e 0c 0a 02 1E 1e 1e 1e
+			39 0A 11 64 28 06 03 39 03 03 28 05 03 3a 03 03 72 6c 72 6c
+			39 0A 11 65 28 04 03 3b 03 03 28 03 03 3c 03 03 72 6c 72 6c
+			39 0A 11 66 28 02 03 3d 03 03 28 01 03 3e 03 03 72 6c 72 6c
+			39 0A 11 67 28 00 03 3f 03 03 20 01 03 40 03 03 72 6c 72 6c
+			39 0A 09 60 58 09 72 6c 58 08 72 6c	
+			39 0A 08 69 24 22 24 22 14 22 04
+			39 0A 09 63 53 2f 72 6c 53 30 72 6c
+			15 0A 02 6b 07
+			39 0A 03 7A 0f 13
+			39 0A 03 7B 0f 13
+			39 0A 35 D1 00 00 00 08 00 2c 00 46 00 5c 00 7c 00 99 00 c8 00 f0 01 32 01 6e 01 c6 02 11 02 12 02 59 02 b0 02 f3 03 60 03 99 03 d0 03 e4 03 eB 03 ef 03 F4 03 FB 03 FF
+			39 0A 35 D2 00 00 00 08 00 2c 00 46 00 5c 00 7c 00 99 00 c8 00 f0 01 32 01 6e 01 c6 02 11 02 12 02 59 02 b0 02 f3 03 60 03 99 03 d0 03 e4 03 eB 03 ef 03 F4 03 FB 03 FF
+			39 0A 35 D3 00 00 00 08 00 2c 00 46 00 5c 00 7c 00 99 00 c8 00 f0 01 32 01 6e 01 c6 02 11 02 12 02 59 02 b0 02 f3 03 60 03 99 03 d0 03 e4 03 eB 03 ef 03 F4 03 FB 03 FF
+			39 0A 35 D4 00 00 00 08 00 2c 00 46 00 5c 00 7c 00 99 00 c8 00 f0 01 32 01 6e 01 c6 02 11 02 12 02 59 02 b0 02 f3 03 60 03 99 03 d0 03 e4 03 eB 03 ef 03 F4 03 FB 03 FF
+			39 0A 35 D5 00 00 00 08 00 2c 00 46 00 5c 00 7c 00 99 00 c8 00 f0 01 32 01 6e 01 c6 02 11 02 12 02 59 02 b0 02 f3 03 60 03 99 03 d0 03 e4 03 eB 03 ef 03 F4 03 FB 03 FF
+			39 0A 35 D6 00 00 00 08 00 2c 00 46 00 5c 00 7c 00 99 00 c8 00 f0 01 32 01 6e 01 c6 02 11 02 12 02 59 02 b0 02 f3 03 60 03 99 03 d0 03 e4 03 eB 03 ef 03 F4 03 FB 03 FF
+			05 64 01 11
+			05 0A 01 29				
+		];
+		
+		panel-init-sequence = [	
+			39 0A 06 FF 77 01 00 00 13
+			15 0A 02 EF 08
+			39 0A 06 FF 77 01 00 00 10
+			39 0A 03 C0 E5 02
+			39 0A 03 C1 0C 0A
+			39 0A 03 C2 07 0F
+			15 0A 02 CC 10
+			39 0A 11 B0 00 08 51 0D CE 06 00 08 08 1D 02 D0 0F 6F 36 3F
+			39 0A 11 B1 00 10 4F 0C 11 05 00 07 07 1F 05 D3 11 6E 34 3F
+			39 0A 06 FF 77 01 00 00 11
+			15 0A 02 B0 4D
+			15 0A 02 B1 1C
+			15 0A 02 B2 87
+			15 0A 02 B3 80
+			15 0A 02 B5 47
+			15 0A 02 B7 85
+			15 0A 02 B8 21
+			15 0A 02 B9 10
+			15 0A 02 C1 78
+			15 0A 02 C2 78
+			15 64 02 D0 88
+			39 0A 04 E0 80 00 02
+			39 0A 0C E1 04 A0 00 00 05 A0 00 00 00 60 60
+			39 0A 0E E2 30 30 60 60 3C A0 00 00 3D A0 00 00 00
+			39 0A 05 E3 00 00 33 33
+			39 0A 03 E4 44 44
+			39 0A 11 E5 06 3E A0 A0 08 40 A0 A0 0A 42 A0 A0 0C 44 A0 A0
+			39 0A 05 E6 00 00 33 33
+			39 0A 03 E7 44 44
+			39 0A 11 E8 07 3F A0 A0 09 41 A0 A0 0B 43 A0 A0 0D 45 A0 A0
+			39 0A 08 EB 00 01 4E 4E EE 44 00
+			39 0A 11 ED FF FF 04 56 72 FF FF FF FF FF FF 27 65 40 FF FF
+			39 0A 07 EF 10 0D 04 08 3F 1F
+			39 0A 06 FF 77 01 00 00 13
+			39 0A 03 E8 00 0E
+			39 0A 06 FF 77 01 00 00 00
+			05 78 01 11
+			39 0A 06 FF 77 01 00 00 13
+			39 0A 03 E8 00 0C
+			39 0A 03 E8 00 00
+			39 0A 06 FF 77 01 00 00 00
+			15 0A 02 36 00
+			15 0A 02 35 00
+			05 14 01 29 				
+		];
+
+		panel-exit-sequence = [
+			05 00 01 28
+			05 00 01 10
+		];
+
+		disp_timings0: display-timings {
+			native-mode = <&dsi0_timing0>;
+			dsi0_timing0: timing0 {
+				clock-frequency = <20000000>;
+				hactive = <320>;
+				vactive = <820>;
+				hfront-porch = <30>;
+				hsync-len = <10>;
+				hback-porch = <30>;
+				vfront-porch = <20>;
+				vsync-len = <8>;
+				vback-porch = <20>;
+				hsync-active = <0>;
+				vsync-active = <0>;
+				de-active = <0>;
+				pixelclk-active = <0>;
+			};
+		};
+
+		ports {
+			#address-cells = <1>;
+			#size-cells = <0>;
+
+			port@0 {
+				reg = <0>;
+				panel_in_dsi: endpoint {
+					remote-endpoint = <&dsi_out_panel>;
+				};
+			};
+		};
+	};
+
+	ports {
+		#address-cells = <1>;
+		#size-cells = <0>;
+
+		port@1 {
+			reg = <1>;
+			dsi_out_panel: endpoint {
+				remote-endpoint = <&panel_in_dsi>;
+			};
+		};
+	};
+
+};
+
+&dsi0_in_vp3 {
+	status = "okay";
+};
+
+&route_dsi0 {
+    status = "disabled";
+    connect = <&vp3_out_dsi0>;
+};
+
+&avsd {
+	status = "okay";
+};
+
+&hdmi0_in_vp0 {
+	status = "disabled";
+};
+
+&hdmi0_in_vp1 {
+	status = "disabled";
+};
+
+&hdmi0_in_vp2 {
+	status = "okay";
+};
+
+&hdmi0 {
+	status = "okay";
+};
+
+&hdmi1 {
+	status = "disabled";
+};
+
+&hdmi1_in_vp0 {
+	status = "disabled";
+};
+
+&hdmi1_in_vp2 {
+	status = "disabled";
+};
+
+&hdmi1_sound {
+	status = "disabled";
+};
+
+&hdptxphy_hdmi1 {
+	status = "disabled";
+};
+
+&i2s6_8ch {
+	status = "disabled";
+};
+
+&route_hdmi0 {
+	status = "okay";
+	connect = <&vp2_out_hdmi0>;
+};
+
+&route_hdmi1 {
+	status = "disabled";
+};
+
+&sata0 {
+	status = "disabled";
+};
+
+&sata1 {
+	status = "disabled";
+};
+
+&sdmmc {
+	status = "okay";
+	vmmc-supply = <&vcc_3v3_sd_s0>;
+};
+
+&mdio1 {
+	rgmii_phy1: phy@1 {
+		compatible = "ethernet-phy-ieee802.3-c22";
+		reg = <0x1>;
+	};
+};
+
+&gmac1 {
+	// Use rgmii-rxid mode to disable rx delay inside Soc
+	phy-mode = "rgmii-rxid";
+	clock_in_out = "intput";
+
+	snps,reset-gpio = <&gpio3 RK_PB7 GPIO_ACTIVE_LOW>;
+	snps,reset-active-low;
+	// Reset time is 20ms, 100ms for rtl8211f
+	snps,reset-delays-us = <0 20000 100000>;
+
+	pinctrl-names = "default";
+	pinctrl-0 = <&gmac1_miim
+		     &gmac1_tx_bus2
+			 &gmac1_rx_bus2
+		     &gmac1_rgmii_clk
+		     &gmac1_rgmii_bus
+			 &gmac1_clkinout>;
+
+	tx_delay = <0x42>;
+	// rx_delay = <0x4f>;
+
+	phy-handle = <&rgmii_phy1>;
+	status = "okay";
+};
+
+&saradc {
+	status = "okay";
+	vref-supply = <&vcc_1v8_s0>;
+};
+
+&pinctrl {
+	rtc {
+		rtc_int: rtc-int {
+			rockchip,pins = <0 RK_PB0 RK_FUNC_GPIO &pcfg_pull_up>;
+		};
+	};
+	
+	sdmmc {
+		sd_s0_pwr: sd-s0-pwr {
+			rockchip,pins = <4 RK_PA2 RK_FUNC_GPIO &pcfg_pull_down>;
+		};
+	};
+	
+	headphone {
+		hp_det: hp-det {
+			rockchip,pins = <1 RK_PD2 RK_FUNC_GPIO &pcfg_pull_none>;
+		};
+	};
+};
+
+#if 1
+&gpu {
+      status = "okay";
+};
+#else
+//for ubuntu24
+&gpu_panthor {
+      mali-supply = <&vdd_gpu_s0>;
+      //mem-supply = <&vdd_gpu_mem_s0>;
+      status = "okay";
+};
+#endif

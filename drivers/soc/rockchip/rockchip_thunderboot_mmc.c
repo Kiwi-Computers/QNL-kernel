@@ -1,0 +1,161 @@
+// SPDX-License-Identifier: GPL-2.0+
+/*
+ * Copyright (C) 2020 Rockchip Electronics Co., Ltd.
+ */
+#include <linux/clk.h>
+#include <linux/iopoll.h>
+#include <linux/kernel.h>
+#include <linux/kthread.h>
+#include <linux/mm.h>
+#include <linux/module.h>
+#include <linux/of.h>
+#include <linux/of_address.h>
+#include <linux/of_device.h>
+#include <linux/of_platform.h>
+#include <linux/platform_device.h>
+#include <linux/soc/rockchip/rockchip_thunderboot.h>
+
+#define SDMMC_CTRL		0x000
+#define SDMMC_CMDARG		0x028
+#define SDMMC_CMD		0x02c
+#define SDMMC_RINTSTS		0x044
+#define SDMMC_STATUS		0x048
+#define SDMMC_BMOD		0x080
+#define SDMMC_DBADDR		0x088
+#define SDMMC_IDSTS		0x08c
+#define SDMMC_INTR_ERROR	0xB7C2
+
+static int rk_tb_mmc_thread(void *p)
+{
+	int ret = 0;
+	struct platform_device *pdev = p;
+	void __iomem *regs;
+	struct resource *res;
+	struct device_node *dma;
+	struct device *dev = &pdev->dev;
+	struct clk_bulk_data *clk_bulks;
+	int clk_num;
+	u32 status;
+
+	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+	regs = ioremap(res->start, resource_size(res));
+	if (!regs) {
+		dev_err(dev, "ioremap failed for resource %pR\n", res);
+		return -ENOMEM;
+	}
+
+	dma = of_parse_phandle(dev->of_node, "memory-region-idmac", 0);
+
+	clk_num = clk_bulk_get_all(&pdev->dev, &clk_bulks);
+	if (clk_num >= 0) {
+		ret = clk_bulk_prepare_enable(clk_num, clk_bulks);
+		if (ret) {
+			dev_err(&pdev->dev, "failed to enable clocks\n");
+			return ret;
+		}
+	} else {
+		dev_err(&pdev->dev, "failed to get clks property\\n");
+		return clk_num;
+	}
+
+	if (readl_poll_timeout(regs + SDMMC_STATUS, status,
+			       !(status & (BIT(10) | GENMASK(7, 4))), 100,
+			       500 * USEC_PER_MSEC)) {
+		dev_err(dev, "Controller is occupied!\n");
+		goto out;
+	}
+
+	if (readl_poll_timeout(regs + SDMMC_IDSTS, status,
+			       !(status & GENMASK(16, 13)), 100,
+			       500 * USEC_PER_MSEC)) {
+		dev_err(dev, "DMA is still running!\n");
+		goto out;
+	}
+
+	status = readl_relaxed(regs + SDMMC_RINTSTS);
+	if (status & SDMMC_INTR_ERROR) {
+		dev_err(dev, "SDMMC_INTR_ERROR status: 0x%08x\n", status);
+		goto out;
+	}
+
+	/* Disable the DMA of the MMC controller */
+	writel(0, regs + SDMMC_CTRL);
+	writel(0, regs + SDMMC_BMOD);
+	writel(0, regs + SDMMC_DBADDR);
+
+	/* Send CMD12 to stop transmission */
+	writel(0xffffffff, regs + SDMMC_RINTSTS);
+	writel(0, regs + SDMMC_CMDARG);
+	writel(0xa000414c, regs + SDMMC_CMD);
+
+	if (readl_poll_timeout(regs + SDMMC_RINTSTS, status,
+			       !(status & BIT(2)), 100,
+			       11 * USEC_PER_MSEC))
+		dev_warn(dev, "Send CMD12 timeout!\n");
+
+	rk_tb_ramdisk_compress_done();
+	rk_tb_prepare_ramdisk_decompress(dev);
+
+	/* Release idmac descriptor */
+	if (dma) {
+		struct resource idmac;
+
+		ret = of_address_to_resource(dma, 0, &idmac);
+		if (ret >= 0)
+			free_reserved_area(phys_to_virt(idmac.start),
+					   phys_to_virt(idmac.start) + resource_size(&idmac),
+					   -1, "memory-region-idmac");
+	}
+
+out:
+	clk_bulk_disable_unprepare(clk_num, clk_bulks);
+	clk_bulk_put_all(clk_num, clk_bulks);
+	of_node_put(dma);
+	iounmap(regs);
+
+	return 0;
+}
+
+static int __init rk_tb_mmc_probe(struct platform_device *pdev)
+{
+	int ret = 0;
+	struct task_struct *tsk;
+
+	tsk = kthread_run(rk_tb_mmc_thread, pdev, "tb_mmc");
+	if (IS_ERR(tsk)) {
+		ret = PTR_ERR(tsk);
+		dev_err(&pdev->dev, "start thread failed (%d)\n", ret);
+	}
+
+	return ret;
+}
+
+#ifdef CONFIG_OF
+static const struct of_device_id rk_tb_mmc_dt_match[] = {
+	{ .compatible = "rockchip,thunder-boot-mmc" },
+	{},
+};
+#endif
+
+static struct platform_driver rk_tb_mmc_driver = {
+	.driver		= {
+		.name	= "rockchip_thunder_boot_mmc",
+		.of_match_table = rk_tb_mmc_dt_match,
+	},
+};
+
+static int __init rk_tb_mmc_init(void)
+{
+	struct device_node *node;
+
+	node = of_find_matching_node(NULL, rk_tb_mmc_dt_match);
+	if (node) {
+		of_platform_device_create(node, NULL, NULL);
+		of_node_put(node);
+		return platform_driver_probe(&rk_tb_mmc_driver, rk_tb_mmc_probe);
+	}
+
+	return 0;
+}
+
+pure_initcall(rk_tb_mmc_init);
