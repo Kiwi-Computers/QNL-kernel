@@ -18,6 +18,17 @@ The goal is simple:
 
 A UNIX-like foundation that feels coherent, integrated, and purpose-built—not a collection of software held together by convention.
 
+# Goals
+
+Some goals we have for QNL are as follows:
+- Hybrid architecture — combine Linux's proven kernel foundation with a Mach-inspired architecture for selected system services.
+- Hardware integration — provide tightly integrated support for Kiwi hardware rather than general-purpose compatibility.
+- Modularity — move appropriate components out of the core kernel where practical, improving isolation and maintainability.
+- Kiwi-native services — provide first-class kernel interfaces for Kiwi technologies and hardware.
+- LLVM/Clang toolchain — use LLVM and Clang as the primary development and build toolchain wherever practical.
+- Unix-like foundation — preserve the familiar principles and interfaces of Unix while creating a distinctly Kiwi system.
+- Evolution, not reinvention — build upon proven technology while gradually replacing or restructuring components where doing so provides a meaningful advantage.
+
 # Licensing
 
 QNL incorporates Linux kernel code and therefore remains subject to the applicable GPLv2 requirements. QNL does not attempt to change or circumvent the licenses of its upstream components.
