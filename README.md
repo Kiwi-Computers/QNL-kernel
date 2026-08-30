@@ -29,6 +29,14 @@ Some goals we have for QNL are as follows:
 - Unix-like foundation — preserve the familiar principles and interfaces of Unix while creating a distinctly Kiwi system.
 - Evolution, not reinvention — build upon proven technology while gradually replacing or restructuring components where doing so provides a meaningful advantage.
 
+## Building
+
+QNL is built using the **open-source cbuild and cports tooling provided by Chimera Linux**.
+
+The QNL development environment uses **LLVM and Clang** as its primary compiler toolchain.
+
+To build QNL, install the required Chimera Linux cbuild/cports tooling, configure the appropriate QNL target (aarch64), and build using Clang.
+
 # Licensing
 
 QNL incorporates Linux kernel code and therefore remains subject to the applicable GPLv2 requirements. QNL does not attempt to change or circumvent the licenses of its upstream components.
