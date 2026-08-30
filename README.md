@@ -16,7 +16,7 @@ QNL is not intended to run on every computer, support every configuration, or ac
 
 The goal is simple:
 
-A UNIX-like foundation that feels coherent, integrated, and purpose-built—not a collection of software held together by convention.
+A UNIX-like/UNIX-based foundation that feels coherent, integrated, and purpose-built—not a collection of software held together by convention.
 
 # Goals
 
