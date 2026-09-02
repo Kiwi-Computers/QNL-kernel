@@ -8,6 +8,8 @@ The name follows the tradition of GNU and XNU: QNL acknowledges its Linux herita
 
 Linux is the foundation. QNL is what we build from it.
 
+<img width="300" height="300" alt="image" src="https://github.com/user-attachments/assets/be9b9c05-0798-453f-bc11-6e685fca81ef" />
+
 # Philosophy
 
 We don't need Linux to be everything. We need it to be good at being QNL.
@@ -30,7 +32,7 @@ Some goals we have for QNL are as follows:
 - Unix-like foundation — preserve the familiar principles and interfaces of Unix while creating a distinctly Kiwi system.
 - Evolution, not reinvention — build upon proven technology while gradually replacing or restructuring components where doing so provides a meaningful advantage.
 
-## Building
+# Building
 
 QNL is built using the **open-source cbuild and cports tooling provided by Chimera Linux**.
 
