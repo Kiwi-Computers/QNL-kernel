@@ -8,8 +8,6 @@ The name follows the tradition of GNU and XNU: QNL acknowledges its Linux herita
 
 Linux is the foundation. QNL is what we build from it.
 
-<img width="300" height="300" alt="image" src="https://github.com/user-attachments/assets/be9b9c05-0798-453f-bc11-6e685fca81ef" />
-
 # Philosophy
 
 We don't need Linux to be everything. We need it to be good at being QNL.
@@ -47,3 +45,10 @@ QNL incorporates Linux kernel code and therefore remains subject to the applicab
 Kiwi-specific code and technology are developed separately where appropriate.
 
 QNL is Linux-derived by necessity, Kiwi-designed by choice.
+
+#
+
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/102648de-77b3-4821-98df-0d2a01a7e8e1" />
+
+
+© 2026 Kiwi Computer. All Rights Reserved.
