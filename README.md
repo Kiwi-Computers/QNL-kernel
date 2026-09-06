@@ -27,7 +27,7 @@ Some goals we have for QNL are as follows:
 - Modularity — move appropriate components out of the core kernel where practical, improving isolation and maintainability.
 - Kiwi-native services — provide first-class kernel interfaces for Kiwi technologies and hardware.
 - LLVM/Clang toolchain — use LLVM and Clang as the primary development and build toolchain wherever practical.
-- Unix-like foundation — preserve the familiar principles and interfaces of Unix while creating a distinctly Kiwi system.
+- *nix foundation — preserve the familiar principles and interfaces of Unix while creating a distinctly Kiwi Unix-based/Unix-like system. Do not hesitate to use BSD code whatsoever.
 - Evolution, not reinvention — build upon proven technology while gradually replacing or restructuring components where doing so provides a meaningful advantage.
 
 # Building
@@ -48,7 +48,8 @@ QNL is Linux-derived by necessity, Kiwi-designed by choice.
 
 #
 
-<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/102648de-77b3-4821-98df-0d2a01a7e8e1" />
+<img width="1920" height="1080" alt="QNL" src="https://github.com/user-attachments/assets/4efa1cc9-4f67-4880-837f-938a950f42cc" />
 
+#
 
 © 2026 Kiwi Computer. All Rights Reserved.
