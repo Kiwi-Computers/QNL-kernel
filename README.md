@@ -16,18 +16,27 @@ QNL is not intended to run on every computer, support every configuration, or ac
 
 The goal is simple:
 
-A UNIX-like foundation that feels coherent, integrated, and purpose-built—not a collection of software held together by convention.
+A UNIX-like/UNIX-based foundation that feels coherent, integrated, and purpose-built—not a collection of software held together by convention.
 
 # Goals
 
 Some goals we have for QNL are as follows:
 - Hybrid architecture — combine Linux's proven kernel foundation with a Mach-inspired architecture for selected system services.
-- Hardware integration — provide tightly integrated support for Kiwi hardware rather than general-purpose compatibility.
+- Hardware integration — provide tightly integrated support for Kiwi hardware (curently RK3588) rather than general-purpose compatibility.
+- Object-oriented driver system — develop a modular, object-oriented driver framework inspired by Apple’s DriverKit, providing structured interfaces for hardware drivers while improving isolation, extensibility, and maintainability.
 - Modularity — move appropriate components out of the core kernel where practical, improving isolation and maintainability.
 - Kiwi-native services — provide first-class kernel interfaces for Kiwi technologies and hardware.
 - LLVM/Clang toolchain — use LLVM and Clang as the primary development and build toolchain wherever practical.
 - Unix-like foundation — preserve the familiar principles and interfaces of Unix while creating a distinctly Kiwi system.
 - Evolution, not reinvention — build upon proven technology while gradually replacing or restructuring components where doing so provides a meaningful advantage.
+
+# Building
+
+QNL is built using the **open-source cbuild and cports tooling provided by Chimera Linux**.
+
+The QNL development environment uses **LLVM and Clang** as its primary compiler toolchain.
+
+To build QNL, install the required Chimera Linux cbuild/cports tooling, configure the appropriate QNL target (aarch64), and build using Clang.
 
 # Licensing
 
@@ -36,3 +45,10 @@ QNL incorporates Linux kernel code and therefore remains subject to the applicab
 Kiwi-specific code and technology are developed separately where appropriate.
 
 QNL is Linux-derived by necessity, Kiwi-designed by choice.
+
+#
+
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/102648de-77b3-4821-98df-0d2a01a7e8e1" />
+
+
+© 2026 Kiwi Computer. All Rights Reserved.
