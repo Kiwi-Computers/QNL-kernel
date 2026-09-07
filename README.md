@@ -27,7 +27,7 @@ Some goals we have for QNL are as follows:
 - Modularity — move appropriate components out of the core kernel where practical, improving isolation and maintainability.
 - Kiwi-native services — provide first-class kernel interfaces for Kiwi technologies and hardware.
 - LLVM/Clang toolchain — use LLVM and Clang as the primary development and build toolchain wherever practical.
-- *nix foundation — preserve the familiar principles and interfaces of Unix while creating a distinctly Kiwi Unix-based/Unix-like system. Do not hesitate to use BSD code whatsoever.
+- *nix foundation — preserve the familiar principles and interfaces of Unix while creating a distinctly Kiwi Unix-based/Unix-like system. Freely incorporate BSD code and ideas wherever their licensing permits.
 - Evolution, not reinvention — build upon proven technology while gradually replacing or restructuring components where doing so provides a meaningful advantage.
 
 # Building
@@ -43,6 +43,8 @@ To build QNL, install the required Chimera Linux cbuild/cports tooling, configur
 QNL incorporates Linux kernel code and therefore remains subject to the applicable GPLv2 requirements. QNL does not attempt to change or circumvent the licenses of its upstream components.
 
 Kiwi-specific code and technology are developed separately where appropriate.
+
+Also, please refrain from using code licensed under GPLv3.
 
 QNL is Linux-derived by necessity, Kiwi-designed by choice.
 
