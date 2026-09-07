@@ -22,7 +22,7 @@ A UNIX-like/UNIX-based foundation that feels coherent, integrated, and purpose-b
 
 Some goals we have for QNL are as follows:
 - Hybrid architecture — combine Linux's proven kernel foundation with a Mach-inspired architecture for selected system services.
-- Hardware integration — provide tightly integrated support for Kiwi hardware (curently RK3588) rather than general-purpose compatibility.
+- Hardware integration — provide tightly integrated support for Kiwi hardware (curently RK3588 and Broadcom BCM2711; later hardware could include newer Rockchip processors after RK3588 and Snapdragon X-series) rather than general-purpose compatibility.
 - Object-oriented driver system — develop a modular, object-oriented driver framework inspired by Apple’s DriverKit, providing structured interfaces for hardware drivers while improving isolation, extensibility, and maintainability.
 - Modularity — move appropriate components out of the core kernel where practical, improving isolation and maintainability.
 - Kiwi-native services — provide first-class kernel interfaces for Kiwi technologies and hardware.
