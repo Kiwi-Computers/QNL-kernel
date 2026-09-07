@@ -3,7 +3,7 @@ VERSION = 6
 PATCHLEVEL = 1
 SUBLEVEL = 141
 EXTRAVERSION =
-NAME = Curry Ramen
+NAME = Flying Fruit
 
 # *DOCUMENTATION*
 # To see a list of typical targets execute "make help"
